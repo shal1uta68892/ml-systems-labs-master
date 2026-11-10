@@ -1,0 +1,30 @@
+--- autograd graph
+SumBackward0
+  AddmmBackward0
+    AccumulateGrad
+    ReluBackward0
+      AddmmBackward0
+        AccumulateGrad
+        TBackward0
+          AccumulateGrad
+    TBackward0
+      AccumulateGrad
+x     shape: (256, 64) dtype: torch.float32 contiguous: True stride: (64, 1)
+x.t() shape: (64, 256) dtype: torch.float32 contiguous: False stride: (1, 64)
+--- traced graph
+graph(%self.1 : __torch__.torch.nn.modules.container.Sequential,
+      %input.1 : Float(256, 64, strides=[64, 1], requires_grad=0, device=cpu)):
+  %_2 : __torch__.torch.nn.modules.linear.___torch_mangle_0.Linear = prim::GetAttr[name="2"](%self.1)
+  %_1 : __torch__.torch.nn.modules.activation.ReLU = prim::GetAttr[name="1"](%self.1)
+  %_0 : __torch__.torch.nn.modules.linear.Linear = prim::GetAttr[name="0"](%self.1)
+  %33 : Tensor = prim::CallMethod[name="forward"](%_0, %input.1)
+  %34 : Tensor = prim::CallMethod[name="forward"](%_1, %33)
+  %35 : Tensor = prim::CallMethod[name="forward"](%_2, %34)
+  return (%35)
+
+eager: 295.2 us | jit.trace: 310.0 us
+torch.compile: 348.8 us
+big contiguous: True | big.t() contiguous: False
+contiguous: 5790 us | non-contiguous: 5890 us | .contiguous()+op: 76490 us
+C:\Users\Daniy\Desktop\ml-systems-labs\.venv\Lib\site-packages\torch\cuda\__init__.py:56: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
