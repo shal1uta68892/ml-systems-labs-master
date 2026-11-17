@@ -1,0 +1,18 @@
+seed: 42
+paths:
+  results: results
+task4:
+  n_elements: 6
+  tolerance: 1.0e-6
+  eps: 1.0e-5
+task5:
+  n_samples: 100
+  noise: 0.1
+  epochs: 100
+  lr: 0.5
+  runs: 5
+task6:
+  iterations: 200
+  warmup: 20
+  batch: 256
+  big_size: 4096
